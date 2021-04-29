@@ -74,10 +74,11 @@ jobs:
       - run:
           name: "Veracode Agent Based Scan"
           command: |
-            curl -sSL https://download.sourceclear.com/ci.sh | bash
+            export EXTRA_ARGS='--update-advisor'
+            curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan $EXTRA_ARGS
 
  # job to perform a Veracode Pipeline Scan
-  pipeline_scan:
+  Veracode_pipelinescan:
     docker: 
       - image: signiant/docker-jenkins-centos7-java8:latest
     
@@ -111,7 +112,7 @@ workflows:
       - veracode_sast:
           requires:
             - build
-      - pipeline_scan:
+      - Veracode_pipelinescan:
           requires:
             - build
       
