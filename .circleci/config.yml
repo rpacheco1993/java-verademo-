@@ -23,7 +23,7 @@ jobs:
             - target
             - ./
   # job to upload to Veracode for scanning
-  veracode_scan:
+  veracode_sast:
     # use a java-based image to run the Veracode API wrapper
     docker:
       - image: signiant/docker-jenkins-centos7-java8:latest
@@ -53,7 +53,7 @@ jobs:
               -filepath ./target/verademo.war
  
  # job to upload to Veracode for Agent Based SCA scanning
-  abs_scan:
+  Veracode_sca:
     docker:
       # specify the version you desire here
       #- image: signiant/docker-jenkins-centos7-java8:latest
@@ -105,10 +105,10 @@ workflows:
   build_and_scan:
     jobs:
       - build
-      - abs_scan:
+      - Veracode_sca:
           requires:
             - build
-      - veracode_scan:
+      - veracode_sast:
           requires:
             - build
       - pipeline_scan:
