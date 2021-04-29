@@ -24,24 +24,20 @@ jobs:
             - ./
   # job to upload to Veracode for scanning
   veracode_scan:
-
     # use a java-based image to run the Veracode API wrapper
     docker:
       - image: signiant/docker-jenkins-centos7-java8:latest
-      
     #working_directory: ~/target
-    
     steps:
       # get the files from the previous job
       - attach_workspace:
-          at: ./
-          
+          at: ./    
       # grab the Veracode agent
       - run:
           name: "Get the Veracode agent"
           command: |
-            wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/$VERACODE_WRAPPER_VERSION/vosp-api-wrappers-java-$VERACODE_WRAPPER_VERSION.jar -O veracode-wrapper.jar
-            #chmod 755 veracode-wrapper.jar
+            wget -q -O veracode-wrapper.jar https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/21.2.7.4/vosp-api-wrappers-java-21.2.7.4.jar
+          #chmod 755 veracode-wrapper.jar
 
       # upload for scanning
       # env vars are used to pass login creds and set the scan name
