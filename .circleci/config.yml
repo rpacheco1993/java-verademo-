@@ -101,7 +101,7 @@ jobs:
       - run:
          name: "Run Veracode Pipeline Scan  and create a baseline"
          command: |
-           java -jar pipeline-scan.jar -vid $TEAM_ANALYSISCENTER_ID -vkey $TEAM_ANALYSISCENTER_KEY -f ./target/verademo.war --json_output_file="baseline.json" || true
+           java -jar pipeline-scan.jar -vid $TEAM_ANALYSISCENTER_ID -vkey $TEAM_ANALYSISCENTER_KEY -f ./target/verademo.war --json_output_file="baseline.json"
 
 # serial jobs - need to run 'build' before 'scan'
 workflows:
@@ -109,12 +109,14 @@ workflows:
   build_and_scan:
     jobs:
       - build
-      - pipeline_scan:
+      - abs_scan:
           requires:
             - build
       - veracode_scan:
           requires:
             - build
-      - abs_scan:
+      - pipeline_scan:
           requires:
             - build
+      
+
