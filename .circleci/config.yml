@@ -63,6 +63,7 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis"
           command: |
+            sudo yum install git-all -y
             export SRCCLR_SCM_TOKEN=$github_api
             export SRCCLR_SCM_TYPE=GITHUB
             git config --global user.email "$emailgit"
@@ -73,6 +74,7 @@ jobs:
             export EXTRA_ARGS='--update-advisor --pull-request'
             curl -fsSL https://get.docker.com -o get-docker.sh
             sudo sh get-docker.sh
+            
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image maven:3.6.3-openjdk-8
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan $EXTRA_ARGS
 
