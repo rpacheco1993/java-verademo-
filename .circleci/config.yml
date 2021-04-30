@@ -3,7 +3,6 @@
 # Veracode Static Analysis Asynchronous Upload and Scan
 # Veracode Static Analysis PipelineScan
 # Import flaws to Azure Boards
-
 version: 2.1
 jobs:
   build:
@@ -66,8 +65,15 @@ jobs:
             mkdir ~/.srcclr
             echo -e "scmType: GITHUB\nscmToken: $github_api" > ~/.srcclr/agent.yml
             chmod 600 ~/.srcclr/agent.yml
-            export EXTRA_ARGS='--update-advisor'
+            
+            #export SRCCLR_PR_ON=methods
+            #export SRCCLR_NO_BREAKING_UPDATES=true
+            #export SRCCLR_IGNORE_CLOSED_PRS=false
+            #export SRCCLR_SCM_URL=https://gitlab.acme.io
+
+            export EXTRA_ARGS='--update-advisor --pull-request'
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan $EXTRA_ARGS
+
  # job to perform a Veracode Pipeline Scan
   Veracode_pipelinescan:
     docker: 
