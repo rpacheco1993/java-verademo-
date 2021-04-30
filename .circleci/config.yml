@@ -69,7 +69,7 @@ jobs:
             
             mkdir ~/.ssh
             ssh-keyscan github.com >> ~/.ssh/known_hosts
-            git checkout -b master
+            git checkout master
             git remote set-url origin "https://github.com/VictorM3/Verademo.git"
  
             export EXTRA_ARGS='--update-advisor --pull-request'
