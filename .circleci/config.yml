@@ -65,7 +65,7 @@ jobs:
             mkdir ~/.srcclr
             echo -e "scmType: GITHUB\nscmToken: $github_api" > ~/.srcclr/agent.yml
             chmod 600 ~/.srcclr/agent.yml
-            
+            cat ~/.srcclr/agent.yml
             #export SRCCLR_PR_ON=methods
             #export SRCCLR_NO_BREAKING_UPDATES=true
             #export SRCCLR_IGNORE_CLOSED_PRS=false
