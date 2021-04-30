@@ -63,6 +63,8 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis"
           command: |
+            mkdir ~/.srcclr
+            echo -e "scmType: GITHUB\nscmToken: $github_api" > ~/.srcclr/agent.yml
             export EXTRA_ARGS='--update-advisor'
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan $EXTRA_ARGS
  # job to perform a Veracode Pipeline Scan
