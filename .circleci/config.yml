@@ -51,9 +51,9 @@ jobs:
   Veracode_sca:
     docker:
       # specify the version you desire here
-      #- image: signiant/docker-jenkins-centos7-java8:latest
+      - image: signiant/docker-jenkins-centos7-java8:latest
       #- image: maven:3.6.3-openjdk-8
-      - image: indigo/centos-maven:latest
+      #- image: indigo/centos-maven:latest
     #working_directory: ~/repo
     steps:
       # get the files from the previous job
@@ -63,7 +63,7 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis"
           command: |
-            sudo yum install git-all -y
+            sudo yum install maven
             export SRCCLR_SCM_TOKEN=$github_api
             export SRCCLR_SCM_TYPE=GITHUB
             git config --global user.email "$emailgit"
