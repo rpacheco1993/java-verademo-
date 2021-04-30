@@ -63,7 +63,7 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis"
           command: |
-            sudo yum install maven
+            sudo yum install maven -y
             export SRCCLR_SCM_TOKEN=$github_api
             export SRCCLR_SCM_TYPE=GITHUB
             git config --global user.email "$emailgit"
