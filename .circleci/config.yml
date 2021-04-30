@@ -51,8 +51,8 @@ jobs:
   Veracode_sca:
     docker:
       # specify the version you desire here
-      - image: signiant/docker-jenkins-centos7-java8:latest
-      #- image: maven:3.6.3-openjdk-8
+      #- image: signiant/docker-jenkins-centos7-java8:latest
+      - image: maven:3.6.3-openjdk-8
     #working_directory: ~/repo
     steps:
       # get the files from the previous job
@@ -70,7 +70,12 @@ jobs:
             ssh-keyscan github.com >> ~/.ssh/known_hosts
             git checkout master
             export EXTRA_ARGS='--update-advisor --pull-request'
-            docker images --format '{{.Repository}}:{{.Tag}}'
+
+            sudo yum check-update
+            curl -fsSL https://get.docker.com/ | sh
+            sudo systemctl start docker
+            sudo systemctl status docker
+            sudo docker images --format '{{.Repository}}:{{.Tag}}'
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image maven:3.6.3-openjdk-8
           
           
