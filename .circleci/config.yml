@@ -71,9 +71,9 @@ jobs:
             git checkout master
             export EXTRA_ARGS='--update-advisor --pull-request'
             #sudo yum check-update
-            curl -fsSL https://get.docker.com/ | sh
-            sudo systemctl start docker
-            sudo systemctl status docker
+            curl -fsSL https://get.docker.com/rootless | sh
+            sudo systemctl --user start docker
+            sudo systemctl --user status docker
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image maven:3.6.3-openjdk-8 || true
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan $EXTRA_ARGS
 
