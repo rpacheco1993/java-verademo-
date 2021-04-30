@@ -63,9 +63,11 @@ jobs:
           name: "Veracode Software Composition Analysis"
           command: |
             #mkdir ~/.srcclr
-            echo -e "scmType: GITHUB\nscmToken: $github_api"
+            #echo -e "scmType: GITHUB\nscmToken: $github_api"
             export SRCCLR_SCM_TOKEN=$github_api
             export SRCCLR_SCM_TYPE=GITHUB
+            git config --global user.email "$emailgit"
+            git config --global user.name "$nomegit"
             #echo -e "scmType: GITHUB\nscmToken: $github_api" > ~/.srcclr/agent.yml
             #chmod 600 ~/.srcclr/agent.yml
             #cat ~/.srcclr/agent.yml
