@@ -70,7 +70,7 @@ jobs:
             ssh-keyscan github.com >> ~/.ssh/known_hosts
             git checkout master
             export EXTRA_ARGS='--update-advisor --pull-request'
-            sudo yum check-update
+            #sudo yum check-update
             curl -fsSL https://get.docker.com/ | sh
             sudo systemctl start docker
             sudo systemctl status docker
