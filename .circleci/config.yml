@@ -64,11 +64,11 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis image scanning"
           command: |
-            sudo apt update
-            sudo apt install apt-transport-https ca-certificates curl software-properties-common
+            apt update -y
+            apt install apt-transport-https ca-certificates curl software-properties-common -y
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-            sudo apt update
-            sudo apt install docker-ce
+            apt update -y
+            apt install docker-ce -y
 
 
 
@@ -87,7 +87,7 @@ jobs:
             cat log.txt
             docker image ls >> log.txt
             cat log.txt
-            apt install default-jre
+            apt install default-jre -y
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image signiant/docker-jenkins-centos7-java8:latest
 
  # job to upload to Veracode for Agent Based SCA scanning
