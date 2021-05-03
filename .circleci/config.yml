@@ -78,7 +78,9 @@ jobs:
             sudo groupadd docker
             sudo usermod -aG docker $(whoami)
             sudo service docker start
-            sudo docker images --format '{{.Repository}}:{{.Tag}}'
+            sudo docker pull signiant/docker-jenkins-centos7-java8:latest
+            sudo docker image ls
+            
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image signiant/docker-jenkins-centos7-java8:latest
 
  # job to upload to Veracode for Agent Based SCA scanning
