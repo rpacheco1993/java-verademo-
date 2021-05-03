@@ -68,16 +68,16 @@ jobs:
             #sudo yum -y install systemd
             
             curl -fsSL https://get.docker.com -o get-docker.sh
-            sudo sh get-docker.sh
+            sh get-docker.sh
             #sudo groupadd docker >> log.txt
             #cat log.txt
-            sudo usermod -aG docker $(whoami) >> log.txt
+            usermod -aG docker $(whoami) >> log.txt
             cat log.txt  
-            sudo systemctl start docker >> log.txt
+            systemctl start docker >> log.txt
             cat log.txt
-            sudo docker pull signiant/docker-jenkins-centos7-java8:latest >> log.txt
+            docker pull signiant/docker-jenkins-centos7-java8:latest >> log.txt
             cat log.txt
-            sudo docker image ls >> log.txt
+            docker image ls >> log.txt
             cat log.txt
             
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image signiant/docker-jenkins-centos7-java8:latest
