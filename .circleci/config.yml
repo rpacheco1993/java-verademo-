@@ -52,7 +52,7 @@ jobs:
   Veracode_sca_image_scanning:
     docker:
       # specify the version you desire here
-      - image: ubuntu:xenial-20210416
+      - image: signiant/docker-jenkins-centos7-java8:latest
       #- image: maven:3.6.3-openjdk-8
       #- image: indigo/centos-maven:latest
     #working_directory: ~/repo
@@ -60,35 +60,16 @@ jobs:
       # get the files from the previous job
       - attach_workspace:
           at: ./
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: true
       # download and run Veracode SCA
       - run:
           name: "Veracode Software Composition Analysis image scanning"
           command: |
-            apt install sudo -y
-            apt update -y
-            apt install apt-transport-https ca-certificates curl software-properties-common -y
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-            apt update -y
-            
-            apt install docker-ce -y
-
-
-
-            #sudo yum -y update
-            #sudo yum -y install systemd
-            #curl -fsSL https://get.docker.com -o get-docker.sh
-            #sh get-docker.sh
-            #sudo groupadd docker >> log.txt
-            #cat log.txt
-            #usermod -aG docker $(whoami) >> log.txt
-            #cat log.txt  
-            #systemctl start docker >> log.txt
-            #cat log.txt
-            docker pull signiant/docker-jenkins-centos7-java8:latest >> log.txt
-            cat log.txt
             docker image ls >> log.txt
             cat log.txt
-            apt install default-jre -y
+            
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image signiant/docker-jenkins-centos7-java8:latest
 
  # job to upload to Veracode for Agent Based SCA scanning
