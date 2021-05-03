@@ -47,6 +47,40 @@ jobs:
               -createprofile true 
               -version CircleCI-$CIRCLE_BUILD_NUM 
               -filepath ./target/verademo.war
+ 
+ # job to upload to Veracode for Agent Based SCA image scanning
+  Veracode_sca_image_scanning:
+    docker:
+      # specify the version you desire here
+      - image: signiant/docker-jenkins-centos7-java8:latest
+      #- image: maven:3.6.3-openjdk-8
+      #- image: indigo/centos-maven:latest
+    #working_directory: ~/repo
+    steps:
+      # get the files from the previous job
+      - attach_workspace:
+          at: ./
+      # download and run Veracode SCA
+      - run:
+          name: "Veracode Software Composition Analysis image scanning"
+          command: |
+            sudo yum install maven -y
+            #export SRCCLR_SCM_TOKEN=$github_api
+            #export SRCCLR_SCM_TYPE=GITHUB
+            #git config --global user.email "$emailgit"
+            #git config --global user.name "$nomegit"
+            #mkdir ~/.ssh
+            #ssh-keyscan github.com >> ~/.ssh/known_hosts
+            #git checkout master
+            #export EXTRA_ARGS='--update-advisor --pull-request'
+            curl -fsSL https://get.docker.com -o get-docker.sh
+            sudo sh get-docker.sh
+            sudo groupadd docker
+            sudo usermod -aG docker $(whoami)
+            sudo service docker start
+            sudo docker images --format '{{.Repository}}:{{.Tag}}'
+            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image signiant/docker-jenkins-centos7-java8:latest
+
  # job to upload to Veracode for Agent Based SCA scanning
   Veracode_sca:
     docker:
@@ -74,8 +108,8 @@ jobs:
             export EXTRA_ARGS='--update-advisor --pull-request'
             curl -fsSL https://get.docker.com -o get-docker.sh
             sudo sh get-docker.sh
-            sudo docker images --format '{{.Repository}}:{{.Tag}}'
-            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image signiant/docker-jenkins-centos7-java8:latest
+            
+            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image maven:3.6.3-openjdk-8
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan $EXTRA_ARGS
 
  # job to perform a Veracode Pipeline Scan
@@ -105,6 +139,9 @@ workflows:
   build_and_scan:
     jobs:
       - build
+      - Veracode_sca_image_scanning:
+          requires:
+            - build
       - Veracode_sca:
           requires:
             - build
