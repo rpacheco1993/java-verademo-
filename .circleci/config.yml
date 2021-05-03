@@ -68,13 +68,13 @@ jobs:
             apt install apt-transport-https ca-certificates curl software-properties-common -y
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
             apt update -y
+            apt install sudo -y
             apt install docker-ce -y
 
 
 
             #sudo yum -y update
             #sudo yum -y install systemd
-            
             #curl -fsSL https://get.docker.com -o get-docker.sh
             #sh get-docker.sh
             #sudo groupadd docker >> log.txt
