@@ -52,7 +52,7 @@ jobs:
   Veracode_sca_image_scanning:
     docker:
       # specify the version you desire here
-      - image: docker pull cimg/openjdk:8.0.282-node
+      - image: cimg/openjdk:8.0.282-node
       #- image: maven:3.6.3-openjdk-8
       #- image: indigo/centos-maven:latest
     #working_directory: ~/repo
