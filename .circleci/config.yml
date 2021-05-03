@@ -65,7 +65,7 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis image scanning"
           command: |
-            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image cimg/openjdk:8.0.282-node
+            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image cimg/openjdk:8.0.282-node || true
  
  # job to upload to Veracode for Agent Based SCA scanning
   Veracode_sca:
