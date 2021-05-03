@@ -67,7 +67,7 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis image scanning"
           command: |
-            export SRCCLR_SKIP_ANALYSERS: "yum"
+            export SRCCLR_SKIP_ANALYSERS=yum
 
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image signiant/docker-jenkins-centos7-java8:latest
 
