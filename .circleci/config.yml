@@ -75,11 +75,10 @@ jobs:
             #export EXTRA_ARGS='--update-advisor --pull-request'
             curl -fsSL https://get.docker.com -o get-docker.sh
             sudo sh get-docker.sh
-            sudo groupadd docker >> log.txt
-            cat log.txt
+            #sudo groupadd docker >> log.txt
+            #cat log.txt
             sudo usermod -aG docker $(whoami) >> log.txt
-            cat log.txt
-            
+            cat log.txt  
             sudo service docker start >> log.txt
             cat log.txt
             sudo docker pull signiant/docker-jenkins-centos7-java8:latest >> log.txt
