@@ -8,7 +8,7 @@ jobs:
   build:
     docker:
       # The primary container is an instance of the first image listed. The job's commands run in this container.
-      - image: maven:3.6.3-openjdk-8
+      - image: cimg/openjdk:8.0.282-node
     working_directory: ~/target
     steps:
       - checkout
@@ -36,7 +36,6 @@ jobs:
           name: "Get the Veracode agent"
           command: |
             wget -q -O veracode-wrapper.jar https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/21.2.7.4/vosp-api-wrappers-java-21.2.7.4.jar
-          #chmod 755 veracode-wrapper.jar
       - run:
           name: "Upload to Veracode"
           command: java -jar veracode-wrapper.jar 
@@ -62,14 +61,12 @@ jobs:
           at: ./
       - setup_remote_docker:
           version: 19.03.13
-
       # download and run Veracode SCA
       - run:
           name: "Veracode Software Composition Analysis image scanning"
           command: |
-            export SRCCLR_SKIP_ANALYZERS=yum
-            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image maven:3.6.3-openjdk-8
-
+            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image cimg/openjdk:8.0.282-node
+ 
  # job to upload to Veracode for Agent Based SCA scanning
   Veracode_sca:
     docker:
@@ -123,10 +120,10 @@ workflows:
   version: 2.1
   build_and_scan:
     jobs:
-      - build
-      - Veracode_sca_image_scanning:
+      - Veracode_sca_image_scanning 
+      - build:
           requires:
-            - build
+            - Veracode_sca_image_scanning
       - Veracode_sca:
           requires:
             - build
