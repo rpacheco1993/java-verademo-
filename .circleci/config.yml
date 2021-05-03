@@ -52,7 +52,7 @@ jobs:
   Veracode_sca_image_scanning:
     docker:
       # specify the version you desire here
-      - image: docker:dind
+      - image: signiant/docker-jenkins-centos7-java8:latest
       #- image: maven:3.6.3-openjdk-8
       #- image: indigo/centos-maven:latest
     #working_directory: ~/repo
@@ -64,15 +64,9 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis image scanning"
           command: |
-            sudo yum install maven -y
-            #export SRCCLR_SCM_TOKEN=$github_api
-            #export SRCCLR_SCM_TYPE=GITHUB
-            #git config --global user.email "$emailgit"
-            #git config --global user.name "$nomegit"
-            #mkdir ~/.ssh
-            #ssh-keyscan github.com >> ~/.ssh/known_hosts
-            #git checkout master
-            #export EXTRA_ARGS='--update-advisor --pull-request'
+            sudo yum -y update
+            sudo yum -y install systemd
+            
             curl -fsSL https://get.docker.com -o get-docker.sh
             sudo sh get-docker.sh
             #sudo groupadd docker >> log.txt
