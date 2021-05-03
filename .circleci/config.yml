@@ -64,11 +64,12 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis image scanning"
           command: |
+            apt install sudo -y
             apt update -y
             apt install apt-transport-https ca-certificates curl software-properties-common -y
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
             apt update -y
-            apt install sudo -y
+            
             apt install docker-ce -y
 
 
