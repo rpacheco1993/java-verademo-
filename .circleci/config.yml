@@ -74,8 +74,8 @@ jobs:
             export EXTRA_ARGS='--update-advisor --pull-request'
             curl -fsSL https://get.docker.com -o get-docker.sh
             sudo sh get-docker.sh
-            
-            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image maven:3.6.3-openjdk-8
+            sudo docker images --format '{{.Repository}}:{{.Tag}}'
+            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image signiant/docker-jenkins-centos7-java8:latest
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan $EXTRA_ARGS
 
  # job to perform a Veracode Pipeline Scan
