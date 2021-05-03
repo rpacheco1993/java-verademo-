@@ -25,7 +25,7 @@ jobs:
   veracode_sast:
     # use a java-based image to run the Veracode API wrapper
     docker:
-      - image: signiant/docker-jenkins-centos7-java8:latest
+      - image: cimg/openjdk:8.0.282-node
     #working_directory: ~/target
     steps:
       # get the files from the previous job
@@ -68,13 +68,13 @@ jobs:
           name: "Veracode Software Composition Analysis image scanning"
           command: |
             export SRCCLR_SKIP_ANALYZERS=yum
-            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image signiant/docker-jenkins-centos7-java8:latest
+            curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image maven:3.6.3-openjdk-8
 
  # job to upload to Veracode for Agent Based SCA scanning
   Veracode_sca:
     docker:
       # specify the version you desire here
-      - image: signiant/docker-jenkins-centos7-java8:latest
+      - image: cimg/openjdk:8.0.282-node
       #- image: maven:3.6.3-openjdk-8
       #- image: indigo/centos-maven:latest
     #working_directory: ~/repo
@@ -86,7 +86,7 @@ jobs:
       - run:
           name: "Veracode Software Composition Analysis"
           command: |
-            sudo yum install maven -y
+            #sudo yum install maven -y
             export SRCCLR_SCM_TOKEN=$github_api
             export SRCCLR_SCM_TYPE=GITHUB
             git config --global user.email "$emailgit"
@@ -95,16 +95,12 @@ jobs:
             ssh-keyscan github.com >> ~/.ssh/known_hosts
             git checkout master
             export EXTRA_ARGS='--update-advisor --pull-request'
-            #curl -fsSL https://get.docker.com -o get-docker.sh
-            #sudo sh get-docker.sh
-            
-            #curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image maven:3.6.3-openjdk-8
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan $EXTRA_ARGS
 
  # job to perform a Veracode Pipeline Scan
   Veracode_pipelinescan:
     docker: 
-      - image: signiant/docker-jenkins-centos7-java8:latest  
+      - image: cimg/openjdk:8.0.282-node
     steps:
       # get the files from the previous job
       - attach_workspace:
