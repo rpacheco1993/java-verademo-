@@ -22,6 +22,32 @@ jobs:
             - target
             - ./
   # job to upload to Veracode for scanning
+  veracode_sast_Full:
+    # use a java-based image to run the Veracode API wrapper
+    docker:
+      - image: cimg/openjdk:8.0.282-node
+    #working_directory: ~/target
+    steps:
+      # get the files from the previous job
+      - attach_workspace:
+          at: ./    
+      # grab the Veracode agent
+      - run:
+          name: "Get the Veracode agent"
+          command: |
+            wget -q -O veracode-wrapper.jar https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/21.2.7.4/vosp-api-wrappers-java-21.2.7.4.jar
+      - run:
+          name: "Upload to Veracode"
+          command: java -jar veracode-wrapper.jar 
+              -vid $TEAM_ANALYSISCENTER_ID
+              -vkey $TEAM_ANALYSISCENTER_KEY
+              -action uploadandscan 
+              -appname "Java_circleci"
+              -createprofile true
+              -scantimeout 20
+              -version CircleCI-$CIRCLE_BUILD_NUM 
+              -filepath ./target/verademo.war
+    # job to upload to Veracode for scanning
   veracode_sast:
     # use a java-based image to run the Veracode API wrapper
     docker:
