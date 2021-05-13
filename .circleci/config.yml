@@ -155,6 +155,9 @@ workflows:
       - veracode_sast:
           requires:
             - build
+      - veracode_sast_Full:
+          requires:
+            - build
       - Veracode_pipelinescan:
           requires:
             - build
