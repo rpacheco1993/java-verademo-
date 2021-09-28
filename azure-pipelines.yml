@@ -75,3 +75,10 @@ steps:
     addCustomTag: '$(build.buildNumber)'
     flawImportLimit: '1000'
   displayName: 'Veracode importando falhas'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(caminhoPacote)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: 'Publica o artefato'
