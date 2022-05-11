@@ -1,11 +1,19 @@
 version: 2.1
 jobs:
-  build:
+  # Faz o Checkout
+  git_checkout:
     docker:
       - image: cimg/openjdk:8.0.282-node
     working_directory: ~/target
     steps:
       - checkout
+  
+  # Compila o projeto
+  build:
+    docker:
+      - image: cimg/openjdk:8.0.282-node
+    working_directory: ~/target
+    steps:
       - run:
           name: Run Maven
           command: 'mvn compile package'
@@ -32,7 +40,7 @@ jobs:
               -vid $TEAM_ANALYSISCENTER_ID
               -vkey $TEAM_ANALYSISCENTER_KEY
               -action uploadandscan 
-              -appname "Verademo_circleci"
+              -appname "Verademo_war_circleci"
               -createprofile true
               -scantimeout 40
               -version CircleCI-$CIRCLE_BUILD_NUM 
@@ -55,7 +63,7 @@ jobs:
               -vid $TEAM_ANALYSISCENTER_ID
               -vkey $TEAM_ANALYSISCENTER_KEY
               -action uploadandscan 
-              -appname "Verademo_circleci"
+              -appname "Verademo_war_circleci"
               -createprofile true
               -sandboxname "HMG"
               -createsandbox true
@@ -113,13 +121,16 @@ workflows:
   version: 2.1
   build_and_scan:
     jobs:
-      - Veracode_sca_image_scanning 
+      - Veracode_sca_image_scanning
+      - git_checkout:
+          requires:
+            - Veracode_sca_image_scanning
       - build:
           requires:
-            - Veracode_sca_image_scanning
+            - git_checkout
       - Veracode_sca:
           requires:
-            - Veracode_sca_image_scanning
+            - git_checkout
       - veracode_sast:
           requires:
             - build
