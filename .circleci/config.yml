@@ -1,19 +1,12 @@
 version: 2.1
 jobs:
-  # Faz o Checkout
-  git_checkout:
-    docker:
-      - image: cimg/openjdk:8.0.282-node
-    working_directory: ~/target
-    steps:
-      - checkout
-  
   # Compila o projeto
   build:
     docker:
       - image: cimg/openjdk:8.0.282-node
     working_directory: ~/target
     steps:
+      - checkout
       - run:
           name: Run Maven
           command: 'mvn compile package'
@@ -88,9 +81,9 @@ jobs:
   Veracode_sca:
     docker:
       - image: cimg/openjdk:8.0.282-node
+    working_directory: ~/target
     steps:
-      - attach_workspace:
-          at: ./
+      - checkout
       - run:
           name: "Veracode Software Composition Analysis"
           command: |
@@ -122,15 +115,12 @@ workflows:
   build_and_scan:
     jobs:
       - Veracode_sca_image_scanning
-      - git_checkout:
-          requires:
-            - Veracode_sca_image_scanning
       - build:
           requires:
-            - git_checkout
+            - Veracode_sca_image_scanning
       - Veracode_sca:
           requires:
-            - git_checkout
+            - Veracode_sca_image_scanning
       - veracode_sast:
           requires:
             - build
