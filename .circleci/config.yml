@@ -1,13 +1,7 @@
-#Steps:
-# Veracode Software Composition Analysis
-# Veracode Static Analysis Asynchronous Upload and Scan
-# Veracode Static Analysis PipelineScan
-# Import flaws to Azure Boards
 version: 2.1
 jobs:
   build:
     docker:
-      # The primary container is an instance of the first image listed. The job's commands run in this container.
       - image: cimg/openjdk:8.0.282-node
     working_directory: ~/target
     steps:
@@ -15,49 +9,42 @@ jobs:
       - run:
           name: Run Maven
           command: 'mvn compile package'
-      # keep the files around for the scan job
       - persist_to_workspace:
           root: ./
           paths:
             - target
             - ./
-  # job to upload to Veracode for scanning
+  
+  # SAST completo aguardando resultados
   veracode_sast_Full:
-    # use a java-based image to run the Veracode API wrapper
     docker:
       - image: cimg/openjdk:8.0.282-node
-    #working_directory: ~/target
     steps:
-      # get the files from the previous job
       - attach_workspace:
           at: ./    
-      # grab the Veracode agent
       - run:
           name: "Get the Veracode agent"
           command: |
             wget -q -O veracode-wrapper.jar https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/21.2.7.4/vosp-api-wrappers-java-21.2.7.4.jar
       - run:
-          name: "Upload to Veracode"
+          name: "Veracode SAST"
           command: java -jar veracode-wrapper.jar 
               -vid $TEAM_ANALYSISCENTER_ID
               -vkey $TEAM_ANALYSISCENTER_KEY
               -action uploadandscan 
-              -appname "Java_circleci"
+              -appname "Verademo_circleci"
               -createprofile true
-              -scantimeout 20
+              -scantimeout 40
               -version CircleCI-$CIRCLE_BUILD_NUM 
               -filepath ./target/verademo.war
-    # job to upload to Veracode for scanning
+
+  # SAST sem aguardar resultados em uma Sandbox chamada HMG
   veracode_sast:
-    # use a java-based image to run the Veracode API wrapper
     docker:
       - image: cimg/openjdk:8.0.282-node
-    #working_directory: ~/target
     steps:
-      # get the files from the previous job
       - attach_workspace:
           at: ./    
-      # grab the Veracode agent
       - run:
           name: "Get the Veracode agent"
           command: |
@@ -68,66 +55,46 @@ jobs:
               -vid $TEAM_ANALYSISCENTER_ID
               -vkey $TEAM_ANALYSISCENTER_KEY
               -action uploadandscan 
-              -appname "Java_circleci"
-              -createprofile true 
+              -appname "Verademo_circleci"
+              -createprofile true
+              -sandboxname "HMG"
+              -createsandbox true
               -version CircleCI-$CIRCLE_BUILD_NUM 
               -filepath ./target/verademo.war
  
- # job to upload to Veracode for Agent Based SCA image scanning
+ # SCA Container
   Veracode_sca_image_scanning:
     docker:
-      # specify the version you desire here
       - image: cimg/openjdk:8.0.282-node
-      #- image: maven:3.6.3-openjdk-8
-      #- image: indigo/centos-maven:latest
-    #working_directory: ~/repo
     steps:
-      # get the files from the previous job
       - attach_workspace:
           at: ./
       - setup_remote_docker:
           version: 19.03.13
-      # download and run Veracode SCA
       - run:
-          name: "Veracode Software Composition Analysis image scanning"
+          name: "Veracode SCA Image Scanning"
           command: |
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --image cimg/openjdk:8.0.282-node || true
  
- # job to upload to Veracode for Agent Based SCA scanning
+ # SCA Projeto
   Veracode_sca:
     docker:
-      # specify the version you desire here
       - image: cimg/openjdk:8.0.282-node
-      #- image: maven:3.6.3-openjdk-8
-      #- image: indigo/centos-maven:latest
-    #working_directory: ~/repo
     steps:
-      # get the files from the previous job
       - attach_workspace:
           at: ./
-      # download and run Veracode SCA
       - run:
           name: "Veracode Software Composition Analysis"
           command: |
-            #sudo yum install maven -y
-            export SRCCLR_SCM_TOKEN=$github_api
-            export SRCCLR_SCM_TYPE=GITHUB
-            git config --global user.email "$emailgit"
-            git config --global user.name "$nomegit"
-            git remote set-url origin https://github.com/IGDEXE/Verademo.git
-            git checkout -f master
-            export EXTRA_ARGS='--update-advisor --pull-request'
-            curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan $EXTRA_ARGS
+            curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor
 
- # job to perform a Veracode Pipeline Scan
+ # Veracode Pipeline Scan
   Veracode_pipelinescan:
     docker: 
       - image: cimg/openjdk:8.0.282-node
     steps:
-      # get the files from the previous job
       - attach_workspace:
           at: ./
-      # Downlowad the scanner
       - run:
          name: "Download Veracode Pipeline Scan"
          command: |
@@ -140,7 +107,8 @@ jobs:
          name: "Run Veracode Pipeline Scan  and create a baseline"
          command: |
            java -jar pipeline-scan.jar -vid $TEAM_ANALYSISCENTER_ID -vkey $TEAM_ANALYSISCENTER_KEY -f ./target/verademo.war --issue_details true 
-# serial jobs - need to run 'build' before 'scan'
+
+# Configura o fluxo dos scans
 workflows:
   version: 2.1
   build_and_scan:
@@ -151,7 +119,7 @@ workflows:
             - Veracode_sca_image_scanning
       - Veracode_sca:
           requires:
-            - build
+            - Veracode_sca_image_scanning
       - veracode_sast:
           requires:
             - build
@@ -161,5 +129,3 @@ workflows:
       - Veracode_pipelinescan:
           requires:
             - build
-      
-
