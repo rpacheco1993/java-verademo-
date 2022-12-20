@@ -47,7 +47,7 @@ jobs:
           vid: '$VID'
           vkey: '$VKEY'
           criticality: 'Medium'
-          appname: '$AppName'
+          appname: '$profile'
           createsandbox: true
           filepath: 'verademo.war'
           deleteIncompleteScan: false
