@@ -42,12 +42,12 @@ jobs:
         env:
           VID: ${{ secrets.VID }} # Lembrar de criar as credenciais no Secrets
           VKEY: ${{ secrets.VKEY }}
-          AppName: ${profile}
+          AppName: teste
         with:
           vid: '$VID'
           vkey: '$VKEY'
           criticality: 'Medium'
-          appname: '$profile'
+          appname: 'teste'
           createsandbox: true
           filepath: 'verademo.war'
           deleteIncompleteScan: false
