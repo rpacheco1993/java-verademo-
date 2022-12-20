@@ -42,7 +42,7 @@ jobs:
         env:
           VID: ${{ secrets.VID }} # Lembrar de criar as credenciais no Secrets
           VKEY: ${{ secrets.VKEY }}
-          AppName: ${{ github.repository }}
+          AppName: ${profile}
         with:
           vid: '$VID'
           vkey: '$VKEY'
